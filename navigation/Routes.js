@@ -7,6 +7,7 @@ import { auth } from '../services/firebase'
 import { AuthUserContext } from './AuthUserProvider'
 import Spinner from '../components/Spinner'
 import TabBar from '../components/TabBar'
+import Colors from '../utils/colors'
 
 // App Stack Screens
 import HomeScreen from '../screens/app/HomeScreen'
@@ -23,7 +24,16 @@ import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen'
 
 // Create Theme.
 const navigationTheme = {
-  ...DefaultTheme
+  ...DefaultTheme,
+  colors: { // override colors
+    ...DefaultTheme.colors,
+    /*
+    primary: Colors.primary,
+    text: Colors.primary,
+    border: Colors.mediumGrey,
+    background: Colors.ghostWhite
+    */
+  }
 }
 
 
@@ -90,7 +100,7 @@ export default function Routes() {
   }
 
   return (
-    <NavigationContainer theme={ navigationTheme }>
+    <NavigationContainer theme={navigationTheme}>
       {user ? <AppStack /> : <AuthStack />}
     </NavigationContainer>
   );
