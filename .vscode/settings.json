@@ -1,0 +1,10 @@
+{
+	"files.exclude": {
+		"node_modules": true,
+		".expo": true,
+		".expo-shared": true,
+		".vscode": true,
+		"ios": true,
+		"android": true
+	}
+}
