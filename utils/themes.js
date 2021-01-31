@@ -1,6 +1,7 @@
 import { useColorScheme } from "react-native-appearance"
 import { registerThemes } from "react-native-themed-styles"
 
+
 const light = { 
   background: {
     primary: '#FFFFFF',
@@ -30,37 +31,7 @@ const styleSheetFactory = registerThemes({ light, dark }, () => {
   return 'light' //return ["light", "dark"].includes(colorScheme) ? colorScheme : "light"
 })
 
-export { styleSheetFactory }
 
-
-
-
-
-/*export const styleSheetFactory = _registerThemes({ light, dark }, () => {
-	const colorScheme = useColorScheme()
-	console.log(colorScheme)
-  return [ 'light', 'dark' ].includes(colorScheme) ? colorScheme : 'dark'
-})
-
-export const useTheme = ( data, name = '' ) => {
-  const resolvedName = name || data.appearanceProvider()
-  const theme = data.themes[resolvedName]
-  if (!theme) {
-    throw new Error(`Theme not defined: ${resolvedName}`)
-  }
-  const styles = data.styles[resolvedName]
-
-  return [styles, theme, resolvedName]
+export { 
+  styleSheetFactory 
 }
-
-
-// Local 
-const _registerThemes = ( themes, appearanceProvider ) => {
-  return fn => {
-    const styles = {}
-    for (const [name, theme] of Object.entries(themes)) {
-      styles[name] = fn(theme)
-    }
-    return { styles, themes, appearanceProvider }
-  }
-}*/
