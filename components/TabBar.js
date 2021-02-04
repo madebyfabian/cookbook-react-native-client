@@ -25,7 +25,6 @@ export default function TabBar({ state, descriptors, navigation }) {
 			<View style={ styles.tabBar }>
 				<Item name="Home" isActive={ state.index === 0 } />
 				<Item name="Profile" isActive={ state.index === 1 } />
-				<Item name="_Test" isActive={ state.index === 2 } />
 			</View>
 		</SafeAreaView>
 	)

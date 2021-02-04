@@ -12,7 +12,6 @@ import TabBar from '../components/TabBar'
 import HomeScreen from '../screens/app/HomeScreen'
 import HomeDetailScreen from '../screens/app/HomeDetailScreen'
 import ProfileScreen from '../screens/app/ProfileScreen'
-import _TestScreen from '../screens/app/_TestScreen'
 
 // Auth Stack
 import WelcomeScreen from '../screens/auth/WelcomeScreen'
@@ -61,7 +60,6 @@ const AppStack = () => (
   <AppTabNavigator.Navigator tabBar={props => <TabBar {...props} />}>
     <AppTabNavigator.Screen name="Home" component={HomeStack} />
     <AppTabNavigator.Screen name="Profile" component={ProfileScreen} />
-    <AppTabNavigator.Screen name="_Test" component={_TestScreen} />
   </AppTabNavigator.Navigator>
 )
 
