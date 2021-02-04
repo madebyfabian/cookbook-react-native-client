@@ -2,7 +2,7 @@ import React from 'react'
 import * as Linking from 'expo-linking'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-import { auth } from '../services/firebase'
+import firebase from '../services/firebase'
 import constants from '../utils/constants'
 
 
@@ -34,13 +34,13 @@ const _handleUrl = async currUrl => {
 		case APP_PATHS.authSignInCallback: {
 			// console.log('> url matched with APP_PATHS.authSignInCallback!')
 
-			const isSignInWithEmailLink = auth.isSignInWithEmailLink(currUrl)
+			const isSignInWithEmailLink = firebase.auth().isSignInWithEmailLink(currUrl)
 			if (!isSignInWithEmailLink)
 				return // console.log('> curr url is not a valid sign in url')
 
 			try {
 				const email = await AsyncStorage.getItem(constants.asyncStorageKeys.auth.email)
-				await auth.signInWithEmailLink(email, currUrl)
+				await firebase.auth().signInWithEmailLink(email, currUrl)
 				// User now automatically gets redirected into the app view.
 			} catch (error) {
 				console.error(error)

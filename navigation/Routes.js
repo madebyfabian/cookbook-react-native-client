@@ -3,11 +3,10 @@ import { DefaultTheme, NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
-import { auth } from '../services/firebase'
+import firebase from '../services/firebase'
 import { AuthUserContext } from './AuthUserProvider'
 import Spinner from '../components/Spinner'
 import TabBar from '../components/TabBar'
-import Colors from '../utils/colors'
 
 // App Stack Screens
 import HomeScreen from '../screens/app/HomeScreen'
@@ -82,7 +81,7 @@ export default function Routes() {
 
   useEffect(() => {
     // onAuthStateChanged returns an unsubscriber
-    const unsubscribeAuth = auth.onAuthStateChanged(async authUser => {
+    const unsubscribeAuth = firebase.auth().onAuthStateChanged(async authUser => {
       try {
         await (authUser ? setUser(authUser) : setUser(null));
         setIsLoading(false);

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { StyleSheet, View, Text } from 'react-native'
 import * as Yup from 'yup'
 
-import { auth } from '../../services/firebase'
+import firebase from '../../services/firebase'
 import useStatusBar from '../../hooks/useStatusBar'
 
 import SafeView from '../../components/SafeView'
@@ -35,7 +35,7 @@ export default function RegisterScreen({ navigation }) {
 			await validationSchema.validate(formData)
 
 			// Register user.
-			auth
+			firebase.auth()
 				.createUserWithEmailAndPassword(formData.email, formData.password)
 				.catch(err => setRegisterError(err.message))
 		} catch (err) { 
