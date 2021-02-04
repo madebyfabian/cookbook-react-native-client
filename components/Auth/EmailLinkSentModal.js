@@ -5,7 +5,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 import firebase from '../../services/firebase'
 import useStatusBar from '../../hooks/useStatusBar'
-import useAPI from '../../services/api'
 import { APP_PATHS } from '../../hooks/useHandleAuthCallback'
 import constants from '../../utils/constants'
 
@@ -20,17 +19,16 @@ export default function EmailLinkSentModal({ isVisible, ...rest }) {
 	const [ email ] = useState(''),
 				[ isLoading, setIsLoading ] = useState(false)
 
-	const { BASE_URL } = useAPI()
-
 	const sendEmail = async () => {
 		try {
 			console.log('> Sending signInLink email...')
 
 			setIsLoading(true)
 
+			const baseURL = process.env.REACT_NATIVE_FIREBASE_FUNCTIONS_BASEURL
 			await firebase.auth().sendSignInLinkToEmail(email, {
 				handleCodeInApp: true,
-				url: BASE_URL + '/auth-app-redirect?redirectUrl=' + encodeURIComponent(Linking.makeUrl(APP_PATHS.authSignInCallback))
+				url: baseURL + '/auth-app-redirect?redirectUrl=' + encodeURIComponent(Linking.makeUrl(APP_PATHS.authSignInCallback))
 			})
 
 			// Save the email in local storage, to retrieve it when user comes back from email link.

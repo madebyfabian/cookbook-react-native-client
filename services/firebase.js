@@ -1,12 +1,13 @@
 import * as firebase from 'firebase/app'
 import 'firebase/auth'
 
-import firebaseConfig from '../firebase.config.local.json'
-
 
 // Initialize Firebase App
 if (!firebase.apps.length)
-  firebase.initializeApp(firebaseConfig)
+  firebase.initializeApp({
+    apiKey: process.env.REACT_NATIVE_FIREBASE_APIKEY,
+    authDomain: process.env.REACT_NATIVE_FIREBASE_AUTHDOMAIN,
+  })
 
 
 export default firebase

@@ -4,11 +4,10 @@ import { AuthUserContext } from '../navigation/AuthUserProvider'
 
 export default () => {
 	const { user } = useContext(AuthUserContext)
-	const BASE_URL = 'https://us-central1-vue-cookbook-app.cloudfunctions.net/server'
 
 
 	const _makeRequest = async schema => {
-		const url = BASE_URL + '/graphql',
+		const url = process.env.REACT_NATIVE_FIREBASE_FUNCTIONS_BASEURL + '/graphql',
 					idToken = await user.getIdToken(),
 					headers = { 'Authorization': 'Bearer ' + idToken, 'Content-type': 'application/json' },
 					body = JSON.stringify({ query: schema })
@@ -42,7 +41,6 @@ export default () => {
 
 
 	return {
-		BASE_URL, 
 		getRecipes 
 	}
 }
