@@ -12,7 +12,7 @@ export default function ProfileScreen({ navigation }) {
 	return (
 		<SafeView style={ styles.container }>
 			<Text>Hej, {user.email}!</Text>
-			<Button title="Sign Out" onPress={ auth.signOut() } />
+			<Button title="Sign Out" onPress={ () => auth.signOut() } />
 		</SafeView>
 	)
 }
