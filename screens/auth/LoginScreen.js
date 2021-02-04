@@ -1,94 +1,90 @@
 import React, { useState } from 'react'
 import { Text, StyleSheet, View, ScrollView } from 'react-native'
 import * as Yup from 'yup'
-import * as Linking from 'expo-linking'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 
-import { auth } from '../../services/firebase'
-import { APP_PATHS } from '../../hooks/useHandleAuthCallback'
+import firebase from '../../services/firebase'
+
 import SafeView from '../../components/SafeView'
 import AppButton from '../../components/AppButton'
 import AppTextInput from '../../components/AppTextInput'
-import useAPI from '../../services/api'
-import constants from '../../utils/constants'
+import TextHeadline from '../../components/TextHeadline'
+import EmailLinkSentModal from '../../components/Auth/EmailLinkSentModal'
 
 
 const validationSchema = Yup.object().shape({
-	email: Yup.string().required('Please enter a valid email').email().label('Email')
+	email: Yup.string().email().label('Email'),
+	password: Yup.string().label('Password')
 })
 
-export default function LoginScreen({ navigation }) {
+export default function LoginScreen({ route, navigation }) {
 	const [ loginError, setLoginError ] = useState('')
-	const [ hideLoginForm, setHideLoginForm ] = useState(false)
-	const [ formData, setFormData ] = useState({
-		email: ''
-	})
-	const { BASE_URL } = useAPI()
+	const [ formData, setFormData ] = useState({ email: route.params.email, password: '' })
 
-	const handleOnSignIn = async () => {
-		console.log('> handleOnSignIn')
+
+	const doSignInWithMagicLink = async () => {
+		const inputsValid = await validateInputs()
+		if (!inputsValid)
+			return
+
+		// do it!		
+	}
+
+	const doSignInWithPassword = async () => {
+		console.log(await validateInputs())
+		const inputsValid = await validateInputs()
+		if (!inputsValid)
+			return
+
+		
+
+		firebase.auth().signInWithEmailAndPassword(formData.email, formData.password)
+			.catch(err => setLoginError(err.message) )
+	}
+
+	const validateInputs = async () => {
 		setLoginError('')
-
+		
 		try {
 			await validationSchema.validate(formData)
-
-			// Login with magic link.
-			try {
-				await auth.sendSignInLinkToEmail(formData.email, {
-					handleCodeInApp: true,
-					url: BASE_URL + '/auth-app-redirect?redirectUrl=' + encodeURIComponent(Linking.makeUrl(APP_PATHS.authSignInCallback))
-				})
-
-				setHideLoginForm(true)
-
-				// Save the email in local storage, to retrieve it when user comes back from email link.
-				AsyncStorage.setItem(constants.asyncStorageKeys.auth.email, formData.email)
-			} catch (error) {
-				setLoginError(error.message)
-				setHideLoginForm(false)
-			}
-
-			// Login with email + password.
-			/* await loginWithEmail(formData.email, formData.password)
-				.catch(err => setRegisterError(err.message) )*/
-		} catch (error) {
+			return true
+		} catch (err) {
 			setLoginError(err.errors.join(',')) 
+			return false
 		}
 	}
 
+
 	return (
 		<SafeView style={ styles.container }>
-			<AppButton title="⬅️ Back" type="secondary" onPress={ () => navigation.goBack() } />
+			<TextHeadline>Willkommen zurück!</TextHeadline>
 
-			<ScrollView>
-				<Text style={ styles.headline }>Hej!</Text>
-				<Text style={ styles.subheadline }>Login to continue</Text>
+			<View style={ styles.content }>
+				<AppButton 
+					title="✨ Mit magischem Anmeldelink anmelden" 
+					type="primary" 
+					onPress={ doSignInWithMagicLink } 
+				/>
 
-				{ !hideLoginForm && (
-					<View style={ styles.content }>
-						<AppTextInput 
-							name="email"
-							textContentType="username"
-							placeholder="Your email"
-							autoCompleteType="email"
-							keyboardType="email-address"
-							autoCapitalize="none"
-							spellCheck={ false }
-							autoCorrect={ false }
-							value={ formData.email } 
-							onChangeText={ text => setFormData({ ...formData, email: text }) }
-						/>
+				<Text style={ styles.seperator }>oder</Text>
 
-						<Text style={ styles.error }>{ loginError }</Text>
+				<AppTextInput 
+					name="password"
+					placeholder="Dein Passwort"
+					autoCompleteType="password"
+					autoCapitalize="none"
+					autoCorrect={ false }
+					value={ formData.password } 
+					onChangeText={ text => setFormData({ ...formData, password: text }) }
+				/>
+				
+				<AppButton 
+					title="Mit Passwort anmelden" 
+					type="secondary"
+					onPress={ doSignInWithPassword }
+				/>
 
-						<AppButton title="✨ Login with magic link" type="primary" onPress={ handleOnSignIn } />
-					</View>
-				) }
-
-				{ hideLoginForm && (
-					<Text>A magic link was ✨ sent to your email ({ formData.email }).</Text>
-				) }
-			</ScrollView>
+				<Text style={ styles.error }>{ loginError }</Text>
+			</View>
 		</SafeView>
 	)
 }
@@ -98,18 +94,13 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 24,
 		paddingVertical: 12
 	},
-	headline: {
-		fontWeight: 'bold',
-		fontSize: 42,
-		marginBottom: 12,
-		marginTop: 32
-	},
-	subheadline: {
-		fontSize: 24,
-		opacity: .65
-	},
 	content: {
 		marginVertical: 32
+	},
+	seperator: {
+		marginVertical: 40,
+		textAlign: 'center',
+		opacity: .5
 	},
 	error: {
 		color: 'red'

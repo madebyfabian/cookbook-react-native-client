@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from 'react'
 import { Pressable, View, StyleSheet, Text, Button } from 'react-native'
 import ViewPager from '@react-native-community/viewpager'
 
+import firebase from '../../services/firebase'
 import useStatusBar from '../../hooks/useStatusBar'
 import { AuthUserContext } from '../../navigation/AuthUserProvider'
 import useAPI from '../../services/api'
@@ -12,6 +13,8 @@ import FilterModal from '../../components/HomeScreen/FilterModal'
 
 
 export default function HomeScreen({ navigation }) {
+
+
 	/*
 	useStatusBar('light-content')
 

@@ -67,8 +67,8 @@ const AppStack = () => (
 )
 
 const AuthStack = () => (
-  <AuthStackNavigator.Navigator initialRouteName="Welcome" headerMode="none">
-    <AuthStackNavigator.Screen name="Welcome" component={WelcomeScreen} />
+  <AuthStackNavigator.Navigator initialRouteName="Welcome" headerMode="screen">
+    <AuthStackNavigator.Screen name="Welcome" component={WelcomeScreen} options={{ title: 'Zurück', header: () => null }} />
     <AuthStackNavigator.Screen name="Login" component={LoginScreen} />
     <AuthStackNavigator.Screen name="Register" component={RegisterScreen} />
     <AuthStackNavigator.Screen name="ForgotPassword" component={ForgotPasswordScreen} />

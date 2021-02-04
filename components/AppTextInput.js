@@ -1,10 +1,11 @@
 import React from 'react'
 import { TextInput, StyleSheet } from 'react-native'
 
-export default function UIButton( props ) {
+export default function AppTextInput( props ) {
 	return (
 		<TextInput 
 			{ ...props }
+			placeholderTextColor="grey"
 			style={ styles.textInput }
 		/>
 	)

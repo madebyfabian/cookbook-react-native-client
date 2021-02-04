@@ -1,9 +1,13 @@
 import React from 'react'
 import { TouchableHighlight, StyleSheet, Text } from 'react-native'
 
+import Spinner from './Spinner'
+
+
 export default function UIButton({ 
 	title,
 	type = 'primary',
+	isLoading = false,
 	style,
 	onPress
 }) {
@@ -31,7 +35,10 @@ export default function UIButton({
 			underlayColor={ underlayColor }
 			activeOpacity={ .65 }
 		>
-			<Text style={ labelStyleArr }>{ title }</Text>
+			{ isLoading
+				? <Spinner color={ type === 'primary' ? '#fff' : '#555' } /> 
+				: <Text style={ labelStyleArr }>{ title }</Text>
+			}
 		</TouchableHighlight>
 	)
 }

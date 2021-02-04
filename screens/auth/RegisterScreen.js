@@ -1,10 +1,14 @@
 import React, { useState } from 'react'
-import { Button, StyleSheet, TextInput, Text } from 'react-native'
+import { StyleSheet, View, Text } from 'react-native'
 import * as Yup from 'yup'
 
 import { auth } from '../../services/firebase'
 import useStatusBar from '../../hooks/useStatusBar'
+
 import SafeView from '../../components/SafeView'
+import AppButton from '../../components/AppButton'
+import AppTextInput from '../../components/AppTextInput'
+import TextHeadline from '../../components/TextHeadline'
 
 
 const validationSchema = Yup.object().shape({
@@ -41,56 +45,59 @@ export default function RegisterScreen({ navigation }) {
 
 	return (
 		<SafeView style={ styles.container }>
-			<Button title="Back" onPress={ () => navigation.goBack() } />
+			<TextHeadline>Willkommen!</TextHeadline>
+			<TextHeadline size={ 2 }>Erstelle einen neuen Account.</TextHeadline>
 
-			<TextInput 
-				style={ styles.input }
-				name="name"
-				placeholder="Enter name"
-				autoCompleteType="name"
-				autoFocus={ true }
-				value={ formData.name } 
-				onChangeText={ text => setFormData({ ...formData, name: text }) }
-			/>
+			<View style={ styles.inner }>
+				<AppTextInput 
+					style={ styles.input }
+					name="name"
+					placeholder="Enter name"
+					autoCompleteType="name"
+					autoFocus={ true }
+					value={ formData.name } 
+					onChangeText={ text => setFormData({ ...formData, name: text }) }
+				/>
 
-			<TextInput 
-				style={ styles.input }
-				name="email"
-				placeholder="Enter email"
-				autoCompleteType="email"
-				keyboardType="email-address"
-				autoCapitalize="none"
-				spellCheck={ false }
-				autoCorrect={ false }
-				value={ formData.email } 
-				onChangeText={ text => setFormData({ ...formData, email: text }) }
-			/>
+				<AppTextInput 
+					style={ styles.input }
+					name="email"
+					placeholder="Enter email"
+					autoCompleteType="email"
+					keyboardType="email-address"
+					autoCapitalize="none"
+					spellCheck={ false }
+					autoCorrect={ false }
+					value={ formData.email } 
+					onChangeText={ text => setFormData({ ...formData, email: text }) }
+				/>
 
-			<TextInput 
-				style={ styles.input }
-				name="password"
-				placeholder="Enter password"
-				autoCapitalize="none"
-				autoCorrect={ false }
-				autoCompleteType="password"
-				value={ formData.password } 
-				onChangeText={ text => setFormData({ ...formData, password: text }) }
-			/>
+				<AppTextInput 
+					style={ styles.input }
+					name="password"
+					placeholder="Enter password"
+					autoCapitalize="none"
+					autoCorrect={ false }
+					autoCompleteType="password"
+					value={ formData.password } 
+					onChangeText={ text => setFormData({ ...formData, password: text }) }
+				/>
 
-			<TextInput 	
-				style={ styles.input }
-				name="password"
-				placeholder="Confirm password"
-				autoCapitalize="none"
-				autoCorrect={ false }
-				autoCompleteType="password"
-				value={ formData.confirmPassword } 
-				onChangeText={ text => setFormData({ ...formData, confirmPassword: text }) }
-			/>
+				<AppTextInput 	
+					style={ styles.input }
+					name="password"
+					placeholder="Confirm password"
+					autoCapitalize="none"
+					autoCorrect={ false }
+					autoCompleteType="password"
+					value={ formData.confirmPassword } 
+					onChangeText={ text => setFormData({ ...formData, confirmPassword: text }) }
+				/>
 
-			<Text style={ styles.error }>{ registerError }</Text>
+				<Text style={ styles.error }>{ registerError }</Text>
 
-			<Button title="Register" onPress={ handleOnSignUp } />
+				<AppButton title="Register" onPress={ handleOnSignUp } />
+			</View>
 		</SafeView>
 	)
 }
@@ -99,6 +106,10 @@ const styles = StyleSheet.create({
 	container: {
     padding: 15
   },
+	inner: {
+		flex: 1,
+		justifyContent: 'center',
+	},
   error: {
 		color: 'red'
 	},
