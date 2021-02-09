@@ -3,20 +3,20 @@ import { DefaultTheme, NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
-import firebase from '../services/firebase'
-import TabBar from '../components/TabBar'
-import { useAuthStore } from '../utils/store'
+import firebase from './services/firebase'
+import TabBar from './components/TabBar'
+import { useAuthStore } from './store'
 
 // App Stack Screens
-import HomeScreen from '../screens/app/HomeScreen'
-import HomeDetailScreen from '../screens/app/HomeDetailScreen'
-import ProfileScreen from '../screens/app/ProfileScreen'
+import HomeScreen from './screens/app/HomeScreen'
+import HomeDetailScreen from './screens/app/HomeDetailScreen'
+import ProfileScreen from './screens/app/ProfileScreen'
 
 // Auth Stack
-import WelcomeScreen from '../screens/auth/WelcomeScreen'
-import RegisterScreen from '../screens/auth/RegisterScreen'
-import LoginScreen from '../screens/auth/LoginScreen'
-import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen'
+import WelcomeScreen from './screens/auth/WelcomeScreen'
+import RegisterScreen from './screens/auth/RegisterScreen'
+import LoginScreen from './screens/auth/LoginScreen'
+import ForgotPasswordScreen from './screens/auth/ForgotPasswordScreen'
 
 
 // Create Theme.

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import Routes from './navigation/Routes'
+import Routes from './routes'
 import useHandleAuthCallback from './hooks/useHandleAuthCallback'
 
 /**

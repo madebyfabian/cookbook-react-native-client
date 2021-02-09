@@ -4,7 +4,7 @@ import { StyleSheet, View, Text, Button } from 'react-native'
 import firebase, { sendSignInLinkToEmail } from '../../services/firebase'
 import useStatusBar from '../../hooks/useStatusBar'
 import { callbackPaths } from '../../utils/constants'
-import { useAuthStore } from '../../utils/store'
+import { useAuthStore } from '../../store'
 
 import SafeView from '../../components/SafeView'
 import TextHeadline from '../../components/TextHeadline'

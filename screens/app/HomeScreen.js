@@ -8,7 +8,7 @@ import SafeView from '../../components/SafeView'
 import Avatar from '../../components/Avatar'
 import RecipeCard from '../../components/HomeScreen/RecipeCard'
 import FilterModal from '../../components/HomeScreen/FilterModal'
-import { useAuthStore } from '../../utils/store'
+import { useAuthStore } from '../../store'
 
 
 export default function HomeScreen({ navigation }) {

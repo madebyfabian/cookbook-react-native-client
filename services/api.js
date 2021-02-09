@@ -1,6 +1,6 @@
 import { FIREBASE_FUNCTIONS_BASEURL } from '@env'
 
-import { useAuthStore } from '../utils/store'
+import { useAuthStore } from '../store'
 
 
 export default () => {

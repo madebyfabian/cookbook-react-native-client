@@ -25,12 +25,12 @@ export const useReauthState = () => {
 const _handleUrl = async e => {
 	const currUrl = e.url
 
-	console.log(`\n> called useHandleAuthCallback._handleUrl with:\n `, currUrl)
-
 	// First, check if the current url is any of the PATHS
 	const foundPathPair = Object.entries(callbackPaths).find(pair => currUrl.includes(pair[1]))
 	if (!foundPathPair)
-		return console.log('  Exiting, url does not match any of the defined paths.\n\n')
+		return // console.log('  Exiting, url does not match any of the defined paths.\n\n')
+
+	console.log(`\n> called useHandleAuthCallback._handleUrl with:\n `, currUrl)
 
 	switch (foundPathPair[1]) {
 		case callbackPaths.authSignIn: {
