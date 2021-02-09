@@ -7,18 +7,13 @@ import { callbackPaths, asyncStorageKeys } from '../utils/constants'
 
 
 export default async function useHandleAuthCallback() {
-	console.log('> useHandleAuthCallback() initialized.')
-
 	const url = await Linking.getInitialURL()
 	if (url)
 		_handleUrl({ url })
 
 	Linking.addEventListener('url', _handleUrl)
 
-	return () => {
-		console.log('> useHandleAuthCallback() unmounted.')
-		Linking.removeEventListener('url', _handleUrl)
-	}
+	return () => Linking.removeEventListener('url', _handleUrl)
 }
 
 export const useReauthState = () => {
@@ -33,7 +28,7 @@ const _handleUrl = async e => {
 	// First, check if the current url is any of the PATHS
 	const foundPathPair = Object.entries(callbackPaths).find(pair => currUrl.includes(pair[1]))
 	if (!foundPathPair)
-		return // console.log('  Exiting, url does not match any of the defined paths.\n\n')
+		return
 
 	console.log(`\n> called useHandleAuthCallback._handleUrl with:\n `, currUrl)
 

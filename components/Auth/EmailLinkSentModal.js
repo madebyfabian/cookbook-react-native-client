@@ -17,8 +17,6 @@ export default function EmailLinkSentModal({ isVisible, email, ...rest }) {
 
 	const sendEmail = async () => {
 		try {
-			console.log('> Sending signInLink email...')
-
 			setIsLoading(true)
 			await sendSignInLinkToEmail(email, callbackPaths.authSignIn)
 			setIsLoading(false)
