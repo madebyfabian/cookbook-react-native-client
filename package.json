@@ -34,7 +34,8 @@
     "react-native-themed-styles": "0.0.4",
     "react-native-web": "~0.13.12",
     "reanimated-bottom-sheet": "^1.0.0-alpha.22",
-    "yup": "^0.32.8"
+    "yup": "^0.32.8",
+    "zustand": "^3.3.1"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",
