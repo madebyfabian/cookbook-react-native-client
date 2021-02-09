@@ -2,9 +2,9 @@ import React from 'react'
 import { Text, StyleSheet } from 'react-native'
 
 
-export default function TextHeadline({ size = 1, children }, ...rest ) {
+export default function TextHeadline({ size = 1, children, style }, ...rest ) {
   return (
-    <Text style={[ styles.headline, styles[ `headline_${ size }` ] ]}>
+    <Text style={[ style, styles.headline, styles[ `headline_${ size }` ] ]}>
 			{ children }
 		</Text>
   )
