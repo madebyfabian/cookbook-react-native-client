@@ -1,4 +1,6 @@
 import React, { useContext } from 'react'
+import { FIREBASE_FUNCTIONS_BASEURL } from '@env'
+
 import { AuthUserContext } from '../navigation/AuthUserProvider'
 
 
@@ -7,7 +9,7 @@ export default () => {
 
 
 	const _makeRequest = async schema => {
-		const url = process.env.REACT_NATIVE_FIREBASE_FUNCTIONS_BASEURL + '/graphql',
+		const url = FIREBASE_FUNCTIONS_BASEURL + '/graphql',
 					idToken = await user.getIdToken(),
 					headers = { 'Authorization': 'Bearer ' + idToken, 'Content-type': 'application/json' },
 					body = JSON.stringify({ query: schema })

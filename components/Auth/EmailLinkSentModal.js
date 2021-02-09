@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { StyleSheet, Text, Modal, View } from 'react-native'
 import * as Linking from 'expo-linking'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { FIREBASE_FUNCTIONS_BASEURL } from '@env'
 
 import firebase from '../../services/firebase'
 import useStatusBar from '../../hooks/useStatusBar'
@@ -25,7 +26,7 @@ export default function EmailLinkSentModal({ isVisible, ...rest }) {
 
 			setIsLoading(true)
 
-			const baseURL = process.env.REACT_NATIVE_FIREBASE_FUNCTIONS_BASEURL
+			const baseURL = FIREBASE_FUNCTIONS_BASEURL
 			await firebase.auth().sendSignInLinkToEmail(email, {
 				handleCodeInApp: true,
 				url: baseURL + '/auth-app-redirect?redirectUrl=' + encodeURIComponent(Linking.makeUrl(APP_PATHS.authSignInCallback))

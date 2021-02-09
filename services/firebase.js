@@ -1,10 +1,11 @@
 import * as firebase from 'firebase/app'
 import 'firebase/auth'
+import { FIREBASE_APIKEY, FIREBASE_AUTHDOMAIN } from '@env'
 
 
 const generateConfig = () => ({
-  apiKey: process.env.REACT_NATIVE_FIREBASE_APIKEY,
-  authDomain: process.env.REACT_NATIVE_FIREBASE_AUTHDOMAIN,
+  apiKey: FIREBASE_APIKEY,
+  authDomain: FIREBASE_AUTHDOMAIN,
 })
 
 
