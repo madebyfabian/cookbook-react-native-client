@@ -18,7 +18,7 @@ const App = () => {
       try {
         await (authUser ? updateUser(authUser) : updateUser(null))
       } catch (error) {
-        console.log(error)
+        console.error(error)
       }
     })
 
