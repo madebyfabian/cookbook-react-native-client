@@ -5,6 +5,11 @@
 		".expo-shared": true,
 		".vscode": true,
 		"ios": true,
-		"android": true
+		"android": true,
+		".watchmanconfig": true,
+		"package*": true,
+		"babel.config.js": true,
+		"app.json": true,
+		".gitignore": true
 	}
 }
