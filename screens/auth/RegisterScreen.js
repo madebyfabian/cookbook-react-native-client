@@ -9,6 +9,7 @@ import SafeView from '../../components/SafeView'
 import AppButton from '../../components/AppButton'
 import AppTextInput from '../../components/AppTextInput'
 import TextHeadline from '../../components/TextHeadline'
+import EmailLinkSentModal from '../../components/Auth/EmailLinkSentModal'
 
 
 const validationSchema = Yup.object().shape({
@@ -24,7 +25,7 @@ export default function RegisterScreen({ navigation }) {
 	const [ registerError, setRegisterError ] = useState('')
 	const [ formData, setFormData ] = useState({
 		name: '', 
-		email: '', 
+		email: 'hello@madebyfabian.com', 
 		password: '', 
 		confirmPassword: ''
 	})
@@ -43,8 +44,18 @@ export default function RegisterScreen({ navigation }) {
 		}
 	}
 
+
+	const [ showModal, setShowModal ] = useState('')
+	const dev = () => {
+		setShowModal(true)
+	}
+
+
 	return (
 		<SafeView style={ styles.container }>
+			<AppButton title="dev()" onPress={ () => dev() } />
+			<EmailLinkSentModal isVisible={showModal} email={formData.email} />
+
 			<TextHeadline>Willkommen!</TextHeadline>
 			<TextHeadline size={ 2 }>Erstelle einen neuen Account.</TextHeadline>
 

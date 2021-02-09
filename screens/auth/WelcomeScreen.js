@@ -33,6 +33,7 @@ export default function WelcomeScreen({ navigation }) {
 			console.log(signInOptions)
 			setIsLoading(false)
 
+			
 			if (!signInOptions.length)
 				// There is no user with this email.
 				return navigation.navigate('Register', { email: formData.email })
@@ -56,11 +57,14 @@ export default function WelcomeScreen({ navigation }) {
 	}
 
 
+	const devNavigateRegister = () => navigation.navigate('Register')
+
 	return (
 		<View style={ styles.container }>
-			<EmailLinkSentModal isVisible={ shouldSendEmailLink } />
+			<EmailLinkSentModal isVisible={ shouldSendEmailLink } email={ formData.email } />
 
-			<SafeView >
+			<SafeView>
+				<AppButton title="navigate->Register" type="secondary" onPress={ devNavigateRegister } />
 				<TextHeadline>Hej!</TextHeadline>
 				<TextHeadline size={ 2 }>Willkommen auf Cookit!</TextHeadline>
 				
