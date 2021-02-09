@@ -30,12 +30,9 @@ export default function LoginScreen({ route, navigation }) {
 	}
 
 	const doSignInWithPassword = async () => {
-		console.log(await validateInputs())
 		const inputsValid = await validateInputs()
 		if (!inputsValid)
 			return
-
-		
 
 		firebase.auth().signInWithEmailAndPassword(formData.email, formData.password)
 			.catch(err => setLoginError(err.message) )

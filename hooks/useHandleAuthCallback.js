@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import * as Linking from 'expo-linking'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import AsyncStorage, { KEYS } from '../utils/AsyncStorage'
 
 import firebase from '../services/firebase'
-import { callbackPaths, asyncStorageKeys } from '../utils/constants'
+import { callbackPaths } from '../utils/constants'
 
 
 export default async function useHandleAuthCallback() {
@@ -32,19 +32,28 @@ const _handleUrl = async e => {
 
 	console.log(`\n> called useHandleAuthCallback._handleUrl with:\n `, currUrl)
 
-	switch (foundPathPair[1]) {
-		case callbackPaths.authSignIn: {
-			console.log('> curr url matches the callbackPaths.authSignIn schema')
+	const callbackPath = foundPathPair[1]
+
+	switch (callbackPath) {
+		case callbackPaths.authSignIn: 
+		case callbackPaths.authRegister: {
+			console.log('> curr url matches the callbackPaths.authSignIn/callbackPaths.authRegister schema')
 
 			const isSignInWithEmailLink = firebase.auth().isSignInWithEmailLink(currUrl)
 			if (!isSignInWithEmailLink)
 				return console.log('> curr url is not a valid sign in url')
 
 			try {
-				const email = await _getAndRemoveAsyncStorageEmail()
+				const email = await AsyncStorage.getAndRemoveItem(KEYS.auth.email)
+				if (!email)
+					throw new Error('Cant get email from AsyncStorage!')
 
-				// Finally, sign in with email and url
 				await firebase.auth().signInWithEmailLink(email, currUrl)
+
+				if (callbackPath === callbackPaths.authRegister) 
+					firebase.auth().currentUser.updateProfile({ 
+						displayName: await AsyncStorage.getAndRemoveItem(KEYS.auth.displayName) 
+					})
 
 				// -> User now automatically gets redirected into the app view.
 			} catch (error) {
@@ -59,7 +68,7 @@ const _handleUrl = async e => {
 
 			try {
 				// First, create a credential based on the emailLink & user email
-				const email = await _getAndRemoveAsyncStorageEmail()
+				const email = await AsyncStorage.getAndRemoveItem(KEYS.auth.email)
 				if (!email)
 					throw new Error('Cant get email from AsyncStorage!')
 
@@ -80,14 +89,4 @@ const _handleUrl = async e => {
 			break
 		}
 	}
-}
-
-
-const _getAndRemoveAsyncStorageEmail = async () => {
-	let email = await AsyncStorage.getItem(asyncStorageKeys.auth.email)
-	
-	// Remove the email from the AsyncStorage after we got it as a variable.
-	// await AsyncStorage.removeItem(asyncStorageKeys.auth.email)
-
-	return email
 }

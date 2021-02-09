@@ -1,16 +1,10 @@
-export const asyncStorageKeys = {
-	auth: {
-		email: 'authEmail'
-	}
-}
-
 export const callbackPaths = {
-	authSignIn: '/authCallback/signIn',
-	authReAuth: '/authCallback/reAuth'
+	authSignIn: 	'/authCallback/signIn',
+	authReAuth: 	'/authCallback/reAuth',
+	authRegister: '/authCallback/register',
 }
 
 
 export default {
-	asyncStorageKeys,
-	callbackPaths
+	callbackPaths,
 }

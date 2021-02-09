@@ -2,9 +2,9 @@ import * as firebase from 'firebase/app'
 import 'firebase/auth'
 import { FIREBASE_APIKEY, FIREBASE_AUTHDOMAIN, FIREBASE_FUNCTIONS_BASEURL } from '@env'
 import * as Linking from 'expo-linking'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 
-import { callbackPaths, asyncStorageKeys } from '../utils/constants'
+import AsyncStorage, { KEYS } from '../utils/AsyncStorage'
+import { callbackPaths } from '../utils/constants'
 
 
 if (!firebase.apps.length)
@@ -37,7 +37,7 @@ export const sendSignInLinkToEmail = async ( email, callbackPath ) => {
   })
 
   // Save the email in local storage, to retrieve it when user comes back from email link.
-  await AsyncStorage.setItem(asyncStorageKeys.auth.email, email)
+  await AsyncStorage.setItem(KEYS.auth.email, email)
 
   console.log('  <- email successfully sent.\n\n')
 }

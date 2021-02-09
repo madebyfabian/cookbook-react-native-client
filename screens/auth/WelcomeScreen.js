@@ -30,7 +30,6 @@ export default function WelcomeScreen({ navigation }) {
 			// Check sign in methods for this email.
 			setIsLoading(true)
 			const signInOptions = await firebase.auth().fetchSignInMethodsForEmail(formData.email)
-			console.log(signInOptions)
 			setIsLoading(false)
 
 			

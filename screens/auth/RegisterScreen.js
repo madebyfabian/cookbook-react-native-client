@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import { StyleSheet, View, Text } from 'react-native'
 import * as Yup from 'yup'
+import AsyncStorage, { KEYS } from '../../utils/AsyncStorage'
 
-import firebase from '../../services/firebase'
+import { sendSignInLinkToEmail } from '../../services/firebase'
 import useStatusBar from '../../hooks/useStatusBar'
+import { callbackPaths } from '../../utils/constants'
 
 import SafeView from '../../components/SafeView'
 import AppButton from '../../components/AppButton'
@@ -14,20 +16,16 @@ import EmailLinkSentModal from '../../components/Auth/EmailLinkSentModal'
 
 const validationSchema = Yup.object().shape({
 	name: Yup.string().required().label('Name'),
-	email: Yup.string().required('Please enter a valid email').email().label('Email'),
-	password: Yup.string().required().min(6, 'Password must have at least 6 characters').label('Password'),
-	confirmPassword: Yup.string().oneOf([ Yup.ref('password') ], 'Confirm Password must match Password').required()
+	email: Yup.string().required('Please enter a valid email').email().label('Email')
 })
 
-export default function RegisterScreen({ navigation }) {
+export default function RegisterScreen({ route, navigation }) {
 	useStatusBar('light-content')
 
 	const [ registerError, setRegisterError ] = useState('')
 	const [ formData, setFormData ] = useState({
 		name: '', 
-		email: 'hello@madebyfabian.com', 
-		password: '', 
-		confirmPassword: ''
+		email: route.params?.email || ''
 	})
 
 	const handleOnSignUp = async () => {
@@ -35,10 +33,15 @@ export default function RegisterScreen({ navigation }) {
 			setRegisterError('')
 			await validationSchema.validate(formData)
 
-			// Register user.
-			firebase.auth()
-				.createUserWithEmailAndPassword(formData.email, formData.password)
-				.catch(err => setRegisterError(err.message))
+			// Save "displayName" of user to AsyncStorage to retrieve it later after registering.
+			await AsyncStorage.setItem(KEYS.auth.displayName, formData.name)
+
+			// Finally, register user.
+			try {
+				await sendSignInLinkToEmail(formData.email, callbackPaths.authRegister)
+			} catch (error) {
+				setRegisterError(error.message)
+			}
 		} catch (err) { 
 			setRegisterError(err.errors.join(',')) 
 		}
@@ -53,7 +56,6 @@ export default function RegisterScreen({ navigation }) {
 
 	return (
 		<SafeView style={ styles.container }>
-			<AppButton title="dev()" onPress={ () => dev() } />
 			<EmailLinkSentModal isVisible={showModal} email={formData.email} />
 
 			<TextHeadline>Willkommen!</TextHeadline>
@@ -63,7 +65,7 @@ export default function RegisterScreen({ navigation }) {
 				<AppTextInput 
 					style={ styles.input }
 					name="name"
-					placeholder="Enter name"
+					placeholder="Dein Spitzname"
 					autoCompleteType="name"
 					autoFocus={ true }
 					value={ formData.name } 
@@ -73,7 +75,7 @@ export default function RegisterScreen({ navigation }) {
 				<AppTextInput 
 					style={ styles.input }
 					name="email"
-					placeholder="Enter email"
+					placeholder="Deine E-Mail"
 					autoCompleteType="email"
 					keyboardType="email-address"
 					autoCapitalize="none"
@@ -81,28 +83,6 @@ export default function RegisterScreen({ navigation }) {
 					autoCorrect={ false }
 					value={ formData.email } 
 					onChangeText={ text => setFormData({ ...formData, email: text }) }
-				/>
-
-				<AppTextInput 
-					style={ styles.input }
-					name="password"
-					placeholder="Enter password"
-					autoCapitalize="none"
-					autoCorrect={ false }
-					autoCompleteType="password"
-					value={ formData.password } 
-					onChangeText={ text => setFormData({ ...formData, password: text }) }
-				/>
-
-				<AppTextInput 	
-					style={ styles.input }
-					name="password"
-					placeholder="Confirm password"
-					autoCapitalize="none"
-					autoCorrect={ false }
-					autoCompleteType="password"
-					value={ formData.confirmPassword } 
-					onChangeText={ text => setFormData({ ...formData, confirmPassword: text }) }
 				/>
 
 				<Text style={ styles.error }>{ registerError }</Text>
