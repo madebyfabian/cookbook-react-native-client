@@ -1,11 +1,10 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { StyleSheet, View, Text, Button } from 'react-native'
 
 import firebase, { sendSignInLinkToEmail } from '../../services/firebase'
 import useStatusBar from '../../hooks/useStatusBar'
-import { AuthUserContext } from '../../navigation/AuthUserProvider'
 import { callbackPaths } from '../../utils/constants'
-import useDidUpdateEffect from '../../hooks/useDidUpdateEffect'
+import { useAuthStore } from '../../utils/store'
 
 import SafeView from '../../components/SafeView'
 import TextHeadline from '../../components/TextHeadline'
@@ -17,7 +16,7 @@ import { useReauthState } from '../../hooks/useHandleAuthCallback'
 export default function ProfileScreen({ navigation }) {
 	useStatusBar('dark-content')
 
-	const { user } = useContext(AuthUserContext),
+	const user = useAuthStore(state => state.user),
 				{ reauthDone, setReauthDone } = useReauthState()
 
 	const [ pw, setPw ] = useState(''),

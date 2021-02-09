@@ -1,23 +1,23 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Pressable, View, StyleSheet, Text, Button } from 'react-native'
 import ViewPager from '@react-native-community/viewpager'
 
 import useStatusBar from '../../hooks/useStatusBar'
-import { AuthUserContext } from '../../navigation/AuthUserProvider'
 import useAPI from '../../services/api'
 import SafeView from '../../components/SafeView'
 import Avatar from '../../components/Avatar'
 import RecipeCard from '../../components/HomeScreen/RecipeCard'
 import FilterModal from '../../components/HomeScreen/FilterModal'
+import { useAuthStore } from '../../utils/store'
 
 
 export default function HomeScreen({ navigation }) {
 	useStatusBar('light-content')
 
-	const [ screenHeight, setScreenHeight ] = useState()
-	
-	const { user } = useContext(AuthUserContext),
-				{ getRecipes } = useAPI(),
+	const user = useAuthStore(state => state.user),
+				{ getRecipes } = useAPI()
+
+	const [ screenHeight, setScreenHeight ] = useState(),
 				[ recipes, setRecipes ] = useState([])
 
 

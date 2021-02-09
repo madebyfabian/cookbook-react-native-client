@@ -1,12 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
 import firebase from '../services/firebase'
-import { AuthUserContext } from './AuthUserProvider'
-import Spinner from '../components/Spinner'
 import TabBar from '../components/TabBar'
+import { useAuthStore } from '../utils/store'
 
 // App Stack Screens
 import HomeScreen from '../screens/app/HomeScreen'
@@ -25,12 +24,6 @@ const navigationTheme = {
   ...DefaultTheme,
   colors: { // override colors
     ...DefaultTheme.colors,
-    /*
-    primary: Colors.primary,
-    text: Colors.primary,
-    border: Colors.mediumGrey,
-    background: Colors.ghostWhite
-    */
   }
 }
 
@@ -74,31 +67,31 @@ const AuthStack = () => (
 
 
 export default function Routes() {
-  const { user, setUser } = useContext(AuthUserContext);
-  const [isLoading, setIsLoading] = useState(true);
+  const user = useAuthStore(state => state.user),
+        updateUser = useAuthStore(state => state.updateUser)
+
+  const [ isLoading, setIsLoading ] = useState(true)
+
 
   useEffect(() => {
     // onAuthStateChanged returns an unsubscriber
     const unsubscribeAuth = firebase.auth().onAuthStateChanged(async authUser => {
       try {
-        await (authUser ? setUser(authUser) : setUser(null));
-        setIsLoading(false);
+        await (authUser ? updateUser(authUser) : updateUser(null))
+        setIsLoading(false)
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
-    });
+    })
 
     // unsubscribe auth listener on unmount
-    return unsubscribeAuth;
+    return unsubscribeAuth
   }, []);
+  
 
-  if (isLoading) {
-    return <Spinner />;
-  }
-
-  return (
-    <NavigationContainer theme={navigationTheme}>
-      {user ? <AppStack /> : <AuthStack />}
+  return isLoading ? null : (
+    <NavigationContainer theme={ navigationTheme }>
+      { user ? <AppStack /> : <AuthStack /> }
     </NavigationContainer>
-  );
+  )
 }

@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import { AuthUserProvider } from './navigation/AuthUserProvider'
+import React, { useEffect } from 'react'
 import Routes from './navigation/Routes'
 import useHandleAuthCallback from './hooks/useHandleAuthCallback'
 
@@ -13,9 +12,7 @@ const App = () => {
   }, [])
 
   return (
-    <AuthUserProvider>
-      <Routes />
-    </AuthUserProvider>
+    <Routes />
   )
 }
 

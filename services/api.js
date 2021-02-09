@@ -1,11 +1,10 @@
-import React, { useContext } from 'react'
 import { FIREBASE_FUNCTIONS_BASEURL } from '@env'
 
-import { AuthUserContext } from '../navigation/AuthUserProvider'
+import { useAuthStore } from '../utils/store'
 
 
 export default () => {
-	const { user } = useContext(AuthUserContext)
+	const user = useAuthStore(state => state.user)
 
 
 	const _makeRequest = async schema => {
