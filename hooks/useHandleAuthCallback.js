@@ -6,14 +6,19 @@ import firebase from '../services/firebase'
 import { callbackPaths, asyncStorageKeys } from '../utils/constants'
 
 
-export default async function useHandleAuthCallback(style, animated = true) {
-	console.log('> useHandleAuthCallback() called.')
+export default async function useHandleAuthCallback() {
+	console.log('> useHandleAuthCallback() initialized.')
 
 	const url = await Linking.getInitialURL()
 	if (url)
 		_handleUrl({ url })
 
 	Linking.addEventListener('url', _handleUrl)
+
+	return () => {
+		console.log('> useHandleAuthCallback() unmounted.')
+		Linking.removeEventListener('url', _handleUrl)
+	}
 }
 
 export const useReauthState = () => {

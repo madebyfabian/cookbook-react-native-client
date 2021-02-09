@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
-import firebase from './services/firebase'
-import TabBar from './components/TabBar'
 import { useAuthStore } from './store'
+import TabBar from './components/TabBar'
 
 // App Stack Screens
 import HomeScreen from './screens/app/HomeScreen'
@@ -67,29 +66,9 @@ const AuthStack = () => (
 
 
 export default function Routes() {
-  const user = useAuthStore(state => state.user),
-        updateUser = useAuthStore(state => state.updateUser)
+  const user = useAuthStore(state => state.user)
 
-  const [ isLoading, setIsLoading ] = useState(true)
-
-
-  useEffect(() => {
-    // onAuthStateChanged returns an unsubscriber
-    const unsubscribeAuth = firebase.auth().onAuthStateChanged(async authUser => {
-      try {
-        await (authUser ? updateUser(authUser) : updateUser(null))
-        setIsLoading(false)
-      } catch (error) {
-        console.log(error)
-      }
-    })
-
-    // unsubscribe auth listener on unmount
-    return unsubscribeAuth
-  }, []);
-  
-
-  return isLoading ? null : (
+  return (
     <NavigationContainer theme={ navigationTheme }>
       { user ? <AppStack /> : <AuthStack /> }
     </NavigationContainer>
