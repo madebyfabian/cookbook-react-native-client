@@ -44,17 +44,17 @@ export default function ProfileScreen({ navigation }) {
 
 
 	const handlePasswordChangeSubmit = async () => {
-		logger.log(`\n> trying to update ${ user.email }'s password to "${ password }"...`)
+		logger.chain.start(`Trying to update ${ user.email }'s password to "${ password }"...`)
 
 		try {
 			// Try to update the password without re-authenticating.
 			await firebase.auth().currentUser.updatePassword(password)
-			logger.log('> Password successfully updated!')
+			logger.chain.end('> Password successfully updated!')
 
 		} catch (error) {
 			switch (error.code) {
 				case 'auth/weak-password':
-					console.warn('Password too weak!')
+					logger.chain.end('Password too weak!')
 					break
 
 				case 'auth/requires-recent-login':
