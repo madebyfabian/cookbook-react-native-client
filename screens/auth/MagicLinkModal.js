@@ -7,6 +7,7 @@ import firebase from '../../services/firebase'
 import useStatusBar from '../../hooks/useStatusBar'
 import AsyncStorage, { KEYS } from '../../utils/AsyncStorage'
 import { callbackPaths } from '../../utils/constants'
+import logger from '../../utils/logger'
 
 import TextHeadline from '../../components/TextHeadline'
 import AppButton from '../../components/AppButton'
@@ -33,7 +34,7 @@ export default function MagicLinkModal({ route, navigation, ...rest }) {
 	// Also stores the email used in the AsyncStorage to access it later in the auth process.
 	// This link uses a firebase function that opens the app.
 	const sendEmail = async () => {
-		console.log('> execute sendEmail() inside MagicLinkModal.js...')
+		logger.chain.start('execute sendEmail() inside MagicLinkModal.js...')
 
 		setIsLoading(true)
 
@@ -52,7 +53,7 @@ export default function MagicLinkModal({ route, navigation, ...rest }) {
 			// Save the email in local storage, to retrieve it when user comes back from email link.
 			await AsyncStorage.setItem(KEYS.auth.email, email)
 
-			console.log('  ↑ email successfully sent.\n')
+			logger.chain.end('email successfully sent.')
 
 		} catch (error) {
 			console.error(error)

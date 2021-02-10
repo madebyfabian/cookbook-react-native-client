@@ -12,6 +12,23 @@ const log = ( ...messages ) => {
 }
 
 
+const chain = {
+	start: ( ...messages ) => {
+		console.log(_getDateString())
+		console.log(...messages)
+	},
+
+	add: ( ...messages ) => {
+		console.log('↑', ...messages)
+	},
+
+	end: ( ...messages ) => {
+		console.log('↑', ...messages, '\n')
+	}
+}
+
+
 export default {
-	log
+	log,
+	chain
 }

@@ -43,10 +43,8 @@ const App = () => {
 
 
   // Execute routing callbacks.
-  useEffect(() => {
-    useHandleAuthCallback()
-  }, [])
-
+  useEffect(useHandleAuthCallback, [])
+  
 
   return (
     <Routes />

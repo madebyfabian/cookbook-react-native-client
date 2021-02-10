@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef } from 'react'
 import { Text, ScrollView, View, Animated } from 'react-native'
 import BottomSheet from 'reanimated-bottom-sheet'
 
