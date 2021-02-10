@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, View, Text, Button } from 'react-native'
+import { StyleSheet, View, Text, ScrollView } from 'react-native'
+import dayjs from 'dayjs'
 
+import logger from '../../utils/logger'
 import firebase, { sendSignInLinkToEmail } from '../../services/firebase'
 import useStatusBar from '../../hooks/useStatusBar'
 import { callbackPaths } from '../../utils/constants'
@@ -10,41 +12,58 @@ import SafeView from '../../components/SafeView'
 import TextHeadline from '../../components/TextHeadline'
 import AppButton from '../../components/AppButton'
 import AppTextInput from '../../components/AppTextInput'
-import { useReauthState } from '../../hooks/useHandleAuthCallback'
 
 
 export default function ProfileScreen({ navigation }) {
 	useStatusBar('dark-content')
 
+	// Global state
 	const user = useAuthStore(state => state.user),
-				{ reauthDone, setReauthDone } = useReauthState()
+				lastReauthDate = useAuthStore(state => state.lastReauthDate)
 
-	const [ pw, setPw ] = useState(''),
-				[ signInOptions, setSignInOptions ] = useState(null)
+	// Local state
+	const [ password, setPassword ] = useState(''),
+				[ signInOptions, setSignInOptions ] = useState(null),
+				[ actionInPipeline, setActionInPipeline ] = useState(null)
 
-	const getSignInOptions = async () => {
-		setSignInOptions(await firebase.auth().fetchSignInMethodsForEmail(user.email))
-	}
-	useEffect(() => { getSignInOptions() }, [])
+
+	useEffect(() => {
+		logger.log('lastReauthDate change triggered!:', { lastReauthDate })
+
+		switch (actionInPipeline) {
+			case 'passwordChange':
+				handlePasswordChangeSubmit()
+				break
+		
+			default:
+				break
+		}
+
+		setActionInPipeline(null)
+
+	}, [ lastReauthDate ])
 
 
 	const handlePasswordChangeSubmit = async () => {
-		console.log(`> trying to update ${ user.email }'s password to "${ pw }"...`)
-
-		if (!reauthDone)
-			// Send an email with a magic link for re-authentication.
-			return sendSignInLinkToEmail(user.email, callbackPaths.authReAuth)
-							.catch(error => console.error(error))
+		logger.log(`\n> trying to update ${ user.email }'s password to "${ password }"...`)
 
 		try {
-			await firebase.auth().currentUser.updatePassword(pw)
-			console.log('Password successfully updated!')
-			setReauthDone(false)
+			// Try to update the password without re-authenticating.
+			await firebase.auth().currentUser.updatePassword(password)
+			logger.log('> Password successfully updated!')
 
 		} catch (error) {
 			switch (error.code) {
 				case 'auth/weak-password':
 					console.warn('Password too weak!')
+					break
+
+				case 'auth/requires-recent-login':
+					// Send an email with a magic link for re-authentication.
+					await sendSignInLinkToEmail(user.email, callbackPaths.authReAuth)
+						.catch(error => console.error(error))
+					
+					setActionInPipeline('passwordChange')
 					break
 
 				default:
@@ -53,46 +72,52 @@ export default function ProfileScreen({ navigation }) {
 			}
 		}
 	}
-	//useDidUpdateEffect(() => { handlePasswordChangeSubmit() }, [ reauthDone ])
+
+
+	const getSignInOptions = async () => {
+		setSignInOptions(await firebase.auth().fetchSignInMethodsForEmail(user.email))
+	}
+	useEffect(() => { getSignInOptions() }, [])
 
 
 	return (
 		<SafeView style={ styles.container }>
-			<TextHeadline>My profile</TextHeadline>
-			<TextHeadline size={ 2 }>{user.email}</TextHeadline>
-			
-			<AppButton 
-				title="Sign Out"
-				onPress={ () => firebase.auth().signOut() } 
-				style={{ marginTop: 16 }} 
-			/>
-
-
-			<TextHeadline size={ 2 } style={{ marginTop: 80 }}>Your auth providers:</TextHeadline>
-			{ signInOptions && signInOptions.map(( option, key ) => (
-				<Text key={ key }>- {option}</Text>
-			)) }
-
-			
-			<TextHeadline size={ 2 } style={{ marginTop: 80 }}>Update/set password:</TextHeadline>
-			<View>
-				<AppTextInput 
-					name="password"
-					placeholder="Enter password"
-					autoCapitalize="none"
-					autoCorrect={ false }
-					autoCompleteType="password"
-					value={ pw } 
-					onChangeText={ text => setPw(text) }
-				/>
+			<ScrollView>
+				<TextHeadline>My profile</TextHeadline>
+				<TextHeadline size={ 2 }>{user.email}</TextHeadline>
+				
 				<AppButton 
-					title="Set password for my account" 
-					type="secondary" 
-					onPress={ handlePasswordChangeSubmit } 
-					style={{ marginTop: -8 }} 
+					title="Sign Out"
+					onPress={ () => firebase.auth().signOut() } 
+					style={{ marginTop: 16 }} 
 				/>
-			</View>
 
+
+				<TextHeadline size={ 2 } style={{ marginTop: 80 }}>Your auth providers:</TextHeadline>
+				{ signInOptions?.map(( option, key ) => (
+					<Text key={ key }>- {option}</Text>
+				)) }
+
+				
+				<TextHeadline size={ 2 } style={{ marginTop: 80 }}>Update/set password:</TextHeadline>
+				<View>
+					<AppTextInput 
+						name="password"
+						placeholder="Enter password"
+						autoCapitalize="none"
+						autoCorrect={ false }
+						autoCompleteType="password"
+						value={ password } 
+						onChangeText={ text => setPassword(text) }
+					/>
+					<AppButton 
+						title="Set password for my account" 
+						type="secondary" 
+						onPress={ handlePasswordChangeSubmit } 
+						style={{ marginTop: -8 }} 
+					/>
+				</View>
+			</ScrollView>
 		</SafeView>
 	)
 }
@@ -100,6 +125,6 @@ export default function ProfileScreen({ navigation }) {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		padding: 20
+		paddingHorizontal: 20
 	}
 })

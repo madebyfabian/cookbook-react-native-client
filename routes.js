@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
-import { useAuthStore } from './store'
+import { useAuthStore, useGeneralStore } from './store'
 import TabBar from './components/TabBar'
+import Spinner from './components/Spinner'
 
 // App Stack Screens
 import HomeScreen from './screens/app/HomeScreen'
@@ -66,11 +67,12 @@ const AuthStack = () => (
 
 
 export default function Routes() {
-  const user = useAuthStore(state => state.user)
+  const user = useAuthStore(state => state.user),
+        appIsLoading = useGeneralStore(state => state.appIsLoading)
 
-  return (
-    <NavigationContainer theme={ navigationTheme }>
-      { user ? <AppStack /> : <AuthStack /> }
-    </NavigationContainer>
-  )
+  return appIsLoading 
+    ? <Spinner /> 
+    : <NavigationContainer theme={ navigationTheme }>
+        { user ? <AppStack /> : <AuthStack /> }
+      </NavigationContainer>
 }

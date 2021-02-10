@@ -3,7 +3,6 @@ import { StyleSheet, View, Text } from 'react-native'
 import * as Yup from 'yup'
 import AsyncStorage, { KEYS } from '../../utils/AsyncStorage'
 
-import { sendSignInLinkToEmail } from '../../services/firebase'
 import useStatusBar from '../../hooks/useStatusBar'
 import { callbackPaths } from '../../utils/constants'
 
@@ -22,41 +21,37 @@ const validationSchema = Yup.object().shape({
 export default function RegisterScreen({ route, navigation }) {
 	useStatusBar('light-content')
 
-	const [ registerError, setRegisterError ] = useState('')
-	const [ formData, setFormData ] = useState({
-		name: '', 
-		email: route.params?.email || ''
-	})
+	const [ registerError, setRegisterError ] = useState(''),
+				[ formData, setFormData ] = useState({
+					name: '', 
+					email: route.params?.email || ''
+				}),
+				[ emailSentShowModal, setEmailSentShowModal ] = useState('')
 
 	const handleOnSignUp = async () => {
+		setRegisterError('')
+
 		try {
-			setRegisterError('')
 			await validationSchema.validate(formData)
 
 			// Save "displayName" of user to AsyncStorage to retrieve it later after registering.
 			await AsyncStorage.setItem(KEYS.auth.displayName, formData.name)
 
-			// Finally, register user.
-			try {
-				await sendSignInLinkToEmail(formData.email, callbackPaths.authRegister)
-			} catch (error) {
-				setRegisterError(error.message)
-			}
+			// Finally, register user, by showing the modal.
+			setEmailSentShowModal(true)
+
 		} catch (err) { 
 			setRegisterError(err.errors.join(',')) 
 		}
 	}
 
-
-	const [ showModal, setShowModal ] = useState('')
-	const dev = () => {
-		setShowModal(true)
-	}
-
-
 	return (
 		<SafeView style={ styles.container }>
-			<EmailLinkSentModal isVisible={showModal} email={formData.email} />
+			<EmailLinkSentModal 
+				isVisible={ emailSentShowModal } 
+				email={ formData.email } 
+				callbackPath={ callbackPaths.authRegister }
+			/>
 
 			<TextHeadline>Willkommen!</TextHeadline>
 			<TextHeadline size={ 2 }>Erstelle einen neuen Account.</TextHeadline>
@@ -68,6 +63,8 @@ export default function RegisterScreen({ route, navigation }) {
 					placeholder="Dein Spitzname"
 					autoCompleteType="name"
 					autoFocus={ true }
+					autoCorrect={ false }
+					spellCheck={ false }
 					value={ formData.name } 
 					onChangeText={ text => setFormData({ ...formData, name: text }) }
 				/>

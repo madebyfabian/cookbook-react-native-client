@@ -10,15 +10,18 @@ import TextHeadline from '../../components/TextHeadline'
 import AppButton from '../../components/AppButton'
 
 
-export default function EmailLinkSentModal({ isVisible, email, ...rest }) {
+export default function EmailLinkSentModal({ isVisible, email, callbackPath, ...rest }) {
 	useStatusBar('light-content')
 
 	const [ isLoading, setIsLoading ] = useState(false)
 
+	if (!callbackPath)
+		callbackPath = callbackPaths.authSignIn
+
 	const sendEmail = async () => {
 		try {
 			setIsLoading(true)
-			await sendSignInLinkToEmail(email, callbackPaths.authSignIn)
+			await sendSignInLinkToEmail(email, callbackPath)
 			setIsLoading(false)
 
 		} catch (error) {

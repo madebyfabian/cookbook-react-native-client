@@ -16,11 +16,6 @@ export default async function useHandleAuthCallback() {
 	return () => Linking.removeEventListener('url', _handleUrl)
 }
 
-export const useReauthState = () => {
-	const [ reauthDone, setReauthDone ] = useState(false)
-	return { reauthDone, setReauthDone }
-}
-
 
 const _handleUrl = async e => {
 	const currUrl = e.url
@@ -76,10 +71,6 @@ const _handleUrl = async e => {
 
 				// Finally, re-authenticate user
 				await firebase.auth().currentUser.reauthenticateWithCredential(cred)
-
-				// Update the state.
-				const { setReauthDone } = useReauthState()
-				setReauthDone(true)
 
 				console.log('> Successfully reauthenticated user!')
 			} catch (error) {
