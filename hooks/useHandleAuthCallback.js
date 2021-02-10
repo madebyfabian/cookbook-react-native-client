@@ -9,17 +9,15 @@ import { callbackPaths } from '../utils/constants'
 export default async function useHandleAuthCallback() {
 	const url = await Linking.getInitialURL()
 	if (url)
-		_handleUrl({ url })
+		_handleUrl(url)
 
-	Linking.addEventListener('url', _handleUrl)
+	Linking.addEventListener('url', e => _handleUrl(e.url))
 
 	return () => Linking.removeEventListener('url', _handleUrl)
 }
 
 
-const _handleUrl = async e => {
-	const currUrl = e.url
-
+const _handleUrl = async ( currUrl ) => {
 	// First, check if the current url is any of the PATHS
 	const foundPathPair = Object.entries(callbackPaths).find(pair => currUrl.includes(pair[1]))
 	if (!foundPathPair)

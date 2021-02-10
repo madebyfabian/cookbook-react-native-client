@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 
-import Routes from './routes'
+import Routes, { getCurrentRouteName, goBack } from './routes'
 import useHandleAuthCallback from './hooks/useHandleAuthCallback'
 import { useAuthStore } from './store'
 import firebase from './services/firebase'
@@ -21,6 +21,9 @@ const App = () => {
   useEffect(() => {
     const unsubscribeAuth = firebase.auth()
       .onAuthStateChanged(async authUser => {
+        if (authUser && getCurrentRouteName() === 'MagicLinkModal')
+          goBack()
+
         updateUser(authUser || null)
         updateAppIsLoading(false)
       })

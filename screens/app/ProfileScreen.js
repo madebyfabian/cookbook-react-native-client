@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { StyleSheet, View, Text, ScrollView } from 'react-native'
-import dayjs from 'dayjs'
 
 import logger from '../../utils/logger'
-import firebase, { sendSignInLinkToEmail } from '../../services/firebase'
+import firebase from '../../services/firebase'
 import useStatusBar from '../../hooks/useStatusBar'
 import { callbackPaths } from '../../utils/constants'
 import { useAuthStore } from '../../store'
@@ -59,11 +58,14 @@ export default function ProfileScreen({ navigation }) {
 					break
 
 				case 'auth/requires-recent-login':
-					// Send an email with a magic link for re-authentication.
-					await sendSignInLinkToEmail(user.email, callbackPaths.authReAuth)
-						.catch(error => console.error(error))
-					
 					setActionInPipeline('passwordChange')
+
+					// Reauthentication
+					navigation.navigate('MagicLinkModal', { 
+						email: user.email, 
+						callbackPath: callbackPaths.authReAuth 
+					})
+
 					break
 
 				default:

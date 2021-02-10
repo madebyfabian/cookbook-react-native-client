@@ -10,7 +10,6 @@ import SafeView from '../../components/SafeView'
 import AppButton from '../../components/AppButton'
 import AppTextInput from '../../components/AppTextInput'
 import TextHeadline from '../../components/TextHeadline'
-import EmailLinkSentModal from '../../components/Auth/EmailLinkSentModal'
 
 
 const validationSchema = Yup.object().shape({
@@ -25,8 +24,7 @@ export default function RegisterScreen({ route, navigation }) {
 				[ formData, setFormData ] = useState({
 					name: '', 
 					email: route.params?.email || ''
-				}),
-				[ emailSentShowModal, setEmailSentShowModal ] = useState('')
+				})
 
 	const handleOnSignUp = async () => {
 		setRegisterError('')
@@ -38,7 +36,10 @@ export default function RegisterScreen({ route, navigation }) {
 			await AsyncStorage.setItem(KEYS.auth.displayName, formData.name)
 
 			// Finally, register user, by showing the modal.
-			setEmailSentShowModal(true)
+			navigation.navigate('MagicLinkModal', { 
+				email: formData.email,  
+				callbackPath: callbackPaths.authRegister
+			})
 
 		} catch (err) { 
 			setRegisterError(err.errors.join(',')) 
@@ -47,12 +48,6 @@ export default function RegisterScreen({ route, navigation }) {
 
 	return (
 		<SafeView style={ styles.container }>
-			<EmailLinkSentModal 
-				isVisible={ emailSentShowModal } 
-				email={ formData.email } 
-				callbackPath={ callbackPaths.authRegister }
-			/>
-
 			<TextHeadline>Willkommen!</TextHeadline>
 			<TextHeadline size={ 2 }>Erstelle einen neuen Account.</TextHeadline>
 

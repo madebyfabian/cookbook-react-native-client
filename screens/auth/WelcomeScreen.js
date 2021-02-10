@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { View, StyleSheet, Text } from 'react-native'
 import * as Yup from 'yup'
 
@@ -9,7 +9,6 @@ import SafeView from '../../components/SafeView'
 import AppTextInput from '../../components/AppTextInput'
 import AppButton from '../../components/AppButton'
 import TextHeadline from '../../components/TextHeadline'
-import EmailLinkSentModal from '../../components/Auth/EmailLinkSentModal'
 
 
 const validationSchema = Yup.object().shape({
@@ -20,7 +19,6 @@ export default function WelcomeScreen({ navigation }) {
 	useStatusBar('dark-content')
 
 	const [ formData, setFormData ] = useState({ email: '' }),
-				[ shouldSendEmailLink, setShouldSendEmailLink ] = useState(false),
 				[ isLoading, setIsLoading ] = useState(false)
 
 	const handleOnEmailContinue = async () => {
@@ -29,41 +27,31 @@ export default function WelcomeScreen({ navigation }) {
 
 			// Check sign in methods for this email.
 			setIsLoading(true)
-			const signInOptions = await firebase.auth().fetchSignInMethodsForEmail(formData.email)
+			const methods = await firebase.auth().fetchSignInMethodsForEmail(formData.email)
 			setIsLoading(false)
 
-			
-			if (!signInOptions.length)
-				// There is no user with this email.
+			// If there is no user with this email.
+			if (!methods.length)
 				return navigation.navigate('Register', { email: formData.email })
-
-			if (signInOptions.length === 1) {
-				if (signInOptions[0] === firebase.auth.EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD)
-					// User has ONLY email link sign in.
-					return setShouldSendEmailLink(true)
-
-				if (signInOptions[0] === firebase.auth.EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD)
-					// User has ONLY set a password.
-					return navigation.navigate('Login', { email: formData.email, signInOptions })
-
-				console.warn('This account is missing a sign in method. It has:', signInOptions)
-			}
 			
+			// If the user has ONLY email link sign in.
+			if (methods.length === 1 && methods[0] === firebase.auth.EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD)
+				return navigation.navigate('MagicLinkModal', { 
+					email: formData.email
+				})
+			
+			// User has email link + other auth methods activated.
+			return navigation.navigate('Login', { email: formData.email, signInOptions: methods })
 
 		} catch (err) {
 			console.error(err)
 		}
 	}
 
-
-	const devNavigateRegister = () => navigation.navigate('Register')
-
+	
 	return (
 		<View style={ styles.container }>
-			<EmailLinkSentModal isVisible={ shouldSendEmailLink } email={ formData.email } />
-
 			<SafeView>
-				<AppButton title="navigate->Register" type="secondary" onPress={ devNavigateRegister } />
 				<TextHeadline>Hej!</TextHeadline>
 				<TextHeadline size={ 2 }>Willkommen auf Cookit!</TextHeadline>
 				

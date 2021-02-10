@@ -8,7 +8,6 @@ import SafeView from '../../components/SafeView'
 import AppButton from '../../components/AppButton'
 import AppTextInput from '../../components/AppTextInput'
 import TextHeadline from '../../components/TextHeadline'
-import EmailLinkSentModal from '../../components/Auth/EmailLinkSentModal'
 
 
 const validationSchema = Yup.object().shape({
@@ -26,7 +25,9 @@ export default function LoginScreen({ route, navigation }) {
 		if (!inputsValid)
 			return
 
-		// do it!		
+		navigation.navigate('MagicLinkModal', {
+			email: formData.email
+		})	
 	}
 
 	const doSignInWithPassword = async () => {
