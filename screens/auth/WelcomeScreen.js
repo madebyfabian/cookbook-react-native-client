@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import { View, StyleSheet, Text } from 'react-native'
 import * as Yup from 'yup'
 
+import useStatusBar from '../../hooks/useStatusBar'
+import useAuth from '../../hooks/useAuth'
 import firebase from '../../services/firebase'
-import { useStatusBar } from '../../hooks'
-import auth from '../../services/auth'
 import { SafeView, AppButton, AppTextInput, TextHeadline } from '../../components'
 
 
@@ -14,6 +14,8 @@ const validationSchema = Yup.object().shape({
 
 export default function WelcomeScreen({ navigation }) {
 	useStatusBar('dark-content')
+
+	const auth = useAuth()
 
 	const [ formData, setFormData ] = useState({ email: '' }),
 				[ isLoading, setIsLoading ] = useState(false)

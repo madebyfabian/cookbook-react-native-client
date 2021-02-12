@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import { StyleSheet, View, Text, ScrollView } from 'react-native'
 
-import auth from '../../services/auth'
 import logger from '../../utils/logger'
 import firebase from '../../services/firebase'
-import { callbackPaths } from '../../utils/constants'
 import { useAuthStore } from '../../store'
-import { useStatusBar, useDidUpdateEffect } from '../../hooks'
+import useStatusBar from '../../hooks/useStatusBar'
+import useDidUpdateEffect from '../../hooks/useDidUpdateEffect'
+import useAuth from '../../hooks/useAuth';
+
 import { SafeView, TextHeadline, AppButton, AppTextInput } from '../../components'
 
 
 export default function ProfileScreen({ navigation }) {
 	useStatusBar('dark-content')
+
+	const auth = useAuth()
 
 	// Global state
 	const user = useAuthStore(state => state.user),
@@ -59,12 +62,13 @@ export default function ProfileScreen({ navigation }) {
 					setActionInPipeline('passwordChange')
 
 					// Reauthentication
-					await auth.doReAuthWithGoogle()
+					auth.doTriggerReAuth()
+					logger.chain.end('Triggered reauth.')
+
 					/*navigation.navigate('MagicLinkModal', { 
 						email: user.email, 
 						callbackPath: callbackPaths.authReAuth 
 					})*/
-					logger.chain.end('Successfully reauthenticated!')
 
 					break
 

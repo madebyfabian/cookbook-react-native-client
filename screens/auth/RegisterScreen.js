@@ -3,7 +3,7 @@ import { StyleSheet, View, Text } from 'react-native'
 import * as Yup from 'yup'
 import AsyncStorage, { KEYS } from '../../utils/AsyncStorage'
 
-import { useStatusBar } from '../../hooks'
+import useStatusBar from '../../hooks/useStatusBar'
 import { callbackPaths } from '../../utils/constants'
 import { SafeView, AppButton, AppTextInput, TextHeadline } from '../../components'
 

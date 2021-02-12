@@ -1,16 +1,54 @@
+import React, { useEffect, useMemo } from 'react'
 import * as AppAuth from 'expo-app-auth'
 import Constants from 'expo-constants'
 import { FIREBASE_IOS_DEV_CLIENTID, FIREBASE_IOS_PROD_CLIENTID } from '@env'
 
-import firebase from './firebase'
+import { closeMagicLinkModal } from '../routes'
 import logger from '../utils/logger'
+import firebase from '../services/firebase'
 import AsyncStorage, { KEYS } from '../utils/AsyncStorage'
+import { useAuthStore, useGeneralStore } from '../store'
+
+
+
+/**
+ * Global hook for all out authentication needs.
+ */
+export default function useAuth() {
+	const updateLastReauthDate = useAuthStore(state => state.updateLastReauthDate)
+
+	const updateAppIsLoading = useGeneralStore(state => state.updateAppIsLoading),
+        updateUser = useAuthStore(state => state.updateUser)
+				
+  useEffect(() => {
+    const unsub = firebase.auth().onAuthStateChanged(async authUser => {
+      // If the user is now valid, close the MagicLinkModal.
+      if (authUser) 
+        closeMagicLinkModal()
+  
+      updateUser(authUser || null)
+      updateAppIsLoading(false)
+    })
+
+    return unsub
+  }, [])
+
+	return useMemo(() => ({
+		// Data
+		PROVIDERS,
+	
+		// Functions
+		doAuthWithGoogle,
+		doTriggerReAuth: () => doTriggerReAuth({ updateLastReauthDate })
+	}))
+}
+
 
 
 /**
  * List of supported providers.
  */
-export const PROVIDERS = {
+const PROVIDERS = {
 	google: {
 		id: firebase.auth.GoogleAuthProvider.GOOGLE_SIGN_IN_METHOD,
 		oAuthUrl: 'https://accounts.google.com'
@@ -24,8 +62,8 @@ export const PROVIDERS = {
 /**
  * Authenticate with Google as provider.
  */
-export const doAuthWithGoogle = async () => {
-	const result = await AppAuth.authAsync(_generateAuthOptions({ provider: PROVIDERS.google.id }))
+const doAuthWithGoogle = async () => {
+	const result = await AppAuth.authAsync(_generateAuthOptions({ provider: PROVIDERS.google.oAuthUrl }))
 	await _asyncCacheAppAuthState(result)
 
 	logger.chain.start('doAuthWithGoogle():', result)
@@ -42,14 +80,14 @@ export const doAuthWithGoogle = async () => {
  * Triggers a reauthentication, the provider which will be used 
  * depends on the user's activated providers.
  */
-export const doTriggerReAuth = () => {
+const doTriggerReAuth = ({ updateLastReauthDate }) => {
 	const { providerId } = _currUserPreferredAuthProvider()
 
 	console.log(`doTriggerReAuth with "${providerId}" as provider.`)
 	
 	try {
 		if (providerId === PROVIDERS.google.id)
-			_doReAuthWithGoogle()
+			_doReAuthWithGoogle({ updateLastReauthDate })
 
 	} catch (error) {
 		logger.error(error)
@@ -58,22 +96,14 @@ export const doTriggerReAuth = () => {
 
 
 
-export default {
-	// Data
-	PROVIDERS,
-
-	// Functions
-	doAuthWithGoogle,
-	doTriggerReAuth
-}
-
+// --------- PRIVATE ----------
 
 
 /**
  * @private
  * Re-Authenticate with Google as provider.
  */
-const _doReAuthWithGoogle = async () => {
+const _doReAuthWithGoogle = async ({ updateLastReauthDate }) => {
 	logger.chain.start('doReAuthWithGoogle()')
 
 	// First get cached AppAuth result (bcs. we need the "refreshToken").
@@ -97,7 +127,6 @@ const _doReAuthWithGoogle = async () => {
 
 	logger.chain.end('Reauthentication with Google provider done!')
 }
-
 
 
 /**

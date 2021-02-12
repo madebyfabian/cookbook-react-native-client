@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import * as Linking from 'expo-linking'
 
 import { FIREBASE_FUNCTIONS_BASEURL } from '@env'
-import { useStatusBar } from '../../hooks'
+import useStatusBar from '../../hooks/useStatusBar'
 import { callbackPaths } from '../../utils/constants'
 import { AppButton, TextHeadline } from '../../components'
 import AsyncStorage, { KEYS } from '../../utils/AsyncStorage'
