@@ -1,7 +1,15 @@
 1. To get this project started, create a ".env" in the root folder. The minimal config is:
 ```bash
+# Firebase General
 FIREBASE_APIKEY=xxx
 FIREBASE_AUTHDOMAIN=xxx.firebaseapp.com
+FIREBASE_PROJECTID=xxx
+FIREBASE_APPID=xxx
+
+# Firebase iOS
+FIREBASE_IOS_CLIENTID=xxx.apps.googleusercontent.com
+
+# Firebase Functions
 FIREBASE_FUNCTIONS_BASEURL=xxx.cloudfunctions.net/xxx
 ```
 
