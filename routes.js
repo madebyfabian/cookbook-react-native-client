@@ -7,6 +7,7 @@ import { enableScreens } from 'react-native-screens'
 
 import { useAuthStore, useGeneralStore } from './store'
 import { TabBar, Spinner } from './components'
+import useRouterUtils from './hooks/useRouterUtils'
 
 // App Stack Screens
 import HomeScreen from './screens/app/HomeScreen'
@@ -19,29 +20,6 @@ import RegisterScreen from './screens/auth/RegisterScreen'
 import LoginScreen from './screens/auth/LoginScreen'
 import ForgotPasswordScreen from './screens/auth/ForgotPasswordScreen'
 import MagicLinkModal from './screens/auth/MagicLinkModal'
-
-
-/**
- * A ref + helper-functions that can be used outside of a Screen/Component to navigate.
- */
-export const navigationRef = createRef()
-
-export function navigate(name, params) {
-  navigationRef.current?.navigate(name, params);
-}
-
-export function getCurrentRouteName() {
-  return navigationRef.current?.getCurrentRoute()?.name
-}
-
-export function goBack() {
-  navigationRef.current?.goBack()
-}
-
-export function closeMagicLinkModal() {
-  if (getCurrentRouteName() === 'MagicLinkModal')
-    goBack()
-}
 
 
 // Enable native navigator.
@@ -111,6 +89,8 @@ const RootStack = ({ user }) => (
 export default function Routes() {
   const user = useAuthStore(state => state.user),
         appIsLoading = useGeneralStore(state => state.appIsLoading)
+
+  const { navigationRef } = useRouterUtils()
 
   if (appIsLoading)
     return <Spinner />
