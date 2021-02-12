@@ -6,6 +6,7 @@ import firebase from '../../services/firebase'
 import useStatusBar from '../../hooks/useStatusBar'
 import { callbackPaths } from '../../utils/constants'
 import { useAuthStore } from '../../store'
+import useDidUpdateEffect from '../../hooks/useDidUpdateEffect'
 
 import SafeView from '../../components/SafeView'
 import TextHeadline from '../../components/TextHeadline'
@@ -26,8 +27,9 @@ export default function ProfileScreen({ navigation }) {
 				[ actionInPipeline, setActionInPipeline ] = useState(null)
 
 
-	useEffect(() => {
-		logger.log('lastReauthDate change triggered!:', { lastReauthDate })
+	// If lastReauthDate changed, try to complete action that's in pipeline.
+	useDidUpdateEffect(() => {
+		logger.log('lastReauthDate change triggered!:', lastReauthDate)
 
 		switch (actionInPipeline) {
 			case 'passwordChange':

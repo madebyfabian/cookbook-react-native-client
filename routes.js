@@ -39,6 +39,11 @@ export function goBack() {
   navigationRef.current?.goBack()
 }
 
+export function closeMagicLinkModal() {
+  if (getCurrentRouteName() === 'MagicLinkModal')
+    goBack()
+}
+
 
 // Enable native navigator.
 enableScreens()

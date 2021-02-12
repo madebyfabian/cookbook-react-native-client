@@ -3,14 +3,11 @@ import AsyncStorage, { KEYS } from '../utils/AsyncStorage'
 
 import firebase from '../services/firebase'
 import { callbackPaths } from '../utils/constants'
-// import { useAuthStore } from '../store'
 import logger from '../utils/logger'
 
 
-export default function useHandleAuthCallback() {
-	logger.chain.start('called useHandleAuthCallback()')
-	// const updateLastReauthDate = useAuthStore(state => state.updateLastReauthDate)
-
+export default function useHandleAuthCallback({ updateLastReauthDate }) {
+	// logger.chain.start('called useHandleAuthCallback()')
 
 	const handleUrl = async ( currUrl ) => {
 		// First, check if the current url is any of the PATHS
@@ -18,18 +15,18 @@ export default function useHandleAuthCallback() {
 		if (!foundPathPair)
 			return
 	
-		logger.chain.start(`called useHandleAuthCallback._handleUrl with:\n `, currUrl)
+		// logger.chain.start(`called useHandleAuthCallback._handleUrl with:\n `, currUrl)
 	
 		const callbackPath = foundPathPair[1]
 	
 		switch (callbackPath) {
 			case callbackPaths.authSignIn: 
 			case callbackPaths.authRegister: {
-				logger.chain.add('curr url matches the callbackPaths.authSignIn/callbackPaths.authRegister schema')
+				// logger.chain.add('curr url matches the callbackPaths.authSignIn/callbackPaths.authRegister schema')
 	
 				const isSignInWithEmailLink = firebase.auth().isSignInWithEmailLink(currUrl)
 				if (!isSignInWithEmailLink)
-					return logger.chain.end('curr url is not a valid sign in url')
+					return // logger.chain.end('curr url is not a valid sign in url')
 	
 				try {
 					const email = await AsyncStorage.getAndRemoveItem(KEYS.auth.email)
@@ -39,9 +36,11 @@ export default function useHandleAuthCallback() {
 					await firebase.auth().signInWithEmailLink(email, currUrl)
 	
 					if (callbackPath === callbackPaths.authRegister) 
-						firebase.auth().currentUser.updateProfile({ 
+						await firebase.auth().currentUser.updateProfile({ 
 							displayName: await AsyncStorage.getAndRemoveItem(KEYS.auth.displayName) 
 						})
+
+					logger.log('User authenticated!')
 	
 					// -> User now automatically gets redirected into the app view.
 				} catch (error) {
@@ -52,7 +51,7 @@ export default function useHandleAuthCallback() {
 			}
 	
 			case callbackPaths.authReAuth: {
-				logger.chain.add('> curr url matches the callbackPaths.authReAuth schema')
+				// logger.chain.add('> curr url matches the callbackPaths.authReAuth schema')
 	
 				try {
 					// First, create a credential based on the emailLink & user email
@@ -64,9 +63,10 @@ export default function useHandleAuthCallback() {
 	
 					// Finally, re-authenticate user
 					const { user } = await firebase.auth().currentUser.reauthenticateWithCredential(cred)
-					// updateLastReauthDate(user?.metadata.b / 1000)
+					updateLastReauthDate(user?.metadata.b / 1000)
 	
-					logger.chain.end('> Successfully reauthenticated user!')
+					logger.log('User successfully reauthenticated!')
+
 				} catch (error) {
 					console.error(error)
 				}
@@ -82,10 +82,10 @@ export default function useHandleAuthCallback() {
 		.then(url => url && handleUrl(url))
 
 	Linking.addEventListener('url', e => handleUrl(e.url))
-	logger.chain.add('expo-linking\'s "url" event listener added.')
+	// logger.chain.add('expo-linking\'s "url" event listener added.')
 
 	return () => {
-		logger.chain.end('destroyed useHandleAuthCallback()')
+		// logger.chain.end('destroyed useHandleAuthCallback()')
 		Linking.removeEventListener('url', handleUrl)
 	}
 }
