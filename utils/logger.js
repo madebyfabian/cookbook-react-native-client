@@ -11,6 +11,16 @@ const log = ( ...messages ) => {
 	console.log(...messages, '\n')
 }
 
+const warn = ( ...messages ) => {
+	console.warn(_getDateString())
+	console.warn(...messages, '\n')
+}
+
+const error = ( ...messages ) => {
+	console.error(_getDateString())
+	console.error(...messages, '\n')
+}
+
 
 const chain = {
 	start: ( ...messages ) => {
@@ -30,5 +40,7 @@ const chain = {
 
 export default {
 	log,
+	warn,
+	error,
 	chain
 }
