@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { StyleSheet, View, Text, ScrollView } from 'react-native'
 
+import auth from '../../services/auth'
 import logger from '../../utils/logger'
 import firebase from '../../services/firebase'
 import { callbackPaths } from '../../utils/constants'
@@ -24,7 +25,7 @@ export default function ProfileScreen({ navigation }) {
 
 	// If lastReauthDate changed, try to complete action that's in pipeline.
 	useDidUpdateEffect(() => {
-		logger.log('lastReauthDate change triggered!:', lastReauthDate)
+		// logger.log('lastReauthDate change triggered!:', lastReauthDate)
 
 		switch (actionInPipeline) {
 			case 'passwordChange':
@@ -58,10 +59,12 @@ export default function ProfileScreen({ navigation }) {
 					setActionInPipeline('passwordChange')
 
 					// Reauthentication
-					navigation.navigate('MagicLinkModal', { 
+					await auth.doReAuthWithGoogle()
+					/*navigation.navigate('MagicLinkModal', { 
 						email: user.email, 
 						callbackPath: callbackPaths.authReAuth 
-					})
+					})*/
+					logger.chain.end('Successfully reauthenticated!')
 
 					break
 
@@ -77,6 +80,11 @@ export default function ProfileScreen({ navigation }) {
 		setSignInOptions(await firebase.auth().fetchSignInMethodsForEmail(user.email))
 	}
 	useEffect(() => { getSignInOptions() }, [])
+
+
+	const _test_handleGoogleReauthenticate = async () => {
+		auth.doTriggerReAuth()
+	}
 
 
 	return (
@@ -96,6 +104,14 @@ export default function ProfileScreen({ navigation }) {
 				{ signInOptions?.map(( option, key ) => (
 					<Text key={ key }>- {option}</Text>
 				)) }
+
+
+				<TextHeadline size={ 2 } style={{ marginTop: 80 }}>Reauthenticate</TextHeadline>
+				<AppButton
+					title="Reauthenticate now"
+					type="secondary"
+					onPress={ _test_handleGoogleReauthenticate }
+				/>
 
 				
 				<TextHeadline size={ 2 } style={{ marginTop: 80 }}>Update/set password:</TextHeadline>

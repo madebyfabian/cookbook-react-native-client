@@ -7,7 +7,8 @@ FIREBASE_PROJECTID=xxx
 FIREBASE_APPID=xxx
 
 # Firebase iOS
-FIREBASE_IOS_CLIENTID=xxx.apps.googleusercontent.com
+FIREBASE_IOS_DEV_CLIENTID=xxx.apps.googleusercontent.com
+FIREBASE_IOS_PROD_CLIENTID=xxx.apps.googleusercontent.com
 
 # Firebase Functions
 FIREBASE_FUNCTIONS_BASEURL=xxx.cloudfunctions.net/xxx

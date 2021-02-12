@@ -8,6 +8,7 @@ export const KEYS = {
 	auth: {
 		email: '@auth.email',
 		displayName: '@auth.displayName',
+		expoAppAuthState: '@auth.expoAppAuthState'
 	}
 }
 

@@ -16,6 +16,7 @@ if (!firebase.apps.length)
   })
 
 firebase.auth().useDeviceLanguage()
+firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
 
 
 export default firebase

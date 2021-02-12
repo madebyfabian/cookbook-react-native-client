@@ -4,6 +4,7 @@ import * as Yup from 'yup'
 
 import firebase from '../../services/firebase'
 import { useStatusBar } from '../../hooks'
+import auth from '../../services/auth'
 import { SafeView, AppButton, AppTextInput, TextHeadline } from '../../components'
 
 
@@ -44,6 +45,14 @@ export default function WelcomeScreen({ navigation }) {
 		}
 	}
 
+	const handleOnGoogleContinue = async () => {
+		try {
+			await auth.doAuthWithGoogle()
+		} catch (error) {
+			console.error(error)
+		}
+	}
+
 	
 	return (
 		<View style={ styles.container }>
@@ -69,9 +78,10 @@ export default function WelcomeScreen({ navigation }) {
 
 					<Text style={ styles.seperator }>oder</Text>
 
-					<AppButton style={ styles.button } title="Weiter mit Google" type="secondary" />
-					<AppButton style={ styles.button } title="Weiter mit Apple" type="secondary" />
-					<AppButton style={ styles.button } title="Weiter mit TikTok" type="secondary" />
+					<AppButton 
+						title="Weiter mit Google" type="secondary"
+						onPress={ handleOnGoogleContinue } 
+					/>
 				</View>
 			</SafeView>
 		</View>
@@ -92,8 +102,5 @@ const styles = StyleSheet.create({
 		marginVertical: 40,
 		textAlign: 'center',
 		opacity: .5
-	},
-	button: {
-		marginVertical: 8
 	}
 })
