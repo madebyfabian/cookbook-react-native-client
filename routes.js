@@ -91,6 +91,7 @@ const AuthStack = () => (
 )
 
 
+// Consider implement a createSwitchNavigator for auth/app change instead of user ? ... : ...
 const RootStack = ({ user }) => (
   <RootStackNavigator.Navigator>
     { user 
