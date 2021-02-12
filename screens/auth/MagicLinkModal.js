@@ -3,14 +3,12 @@ import { StyleSheet, Text, View } from 'react-native'
 import * as Linking from 'expo-linking'
 
 import { FIREBASE_FUNCTIONS_BASEURL } from '@env'
-import firebase from '../../services/firebase'
-import useStatusBar from '../../hooks/useStatusBar'
-import AsyncStorage, { KEYS } from '../../utils/AsyncStorage'
+import { useStatusBar } from '../../hooks'
 import { callbackPaths } from '../../utils/constants'
+import { AppButton, TextHeadline } from '../../components'
+import AsyncStorage, { KEYS } from '../../utils/AsyncStorage'
+import firebase from '../../services/firebase'
 import logger from '../../utils/logger'
-
-import TextHeadline from '../../components/TextHeadline'
-import AppButton from '../../components/AppButton'
 
 
 export default function MagicLinkModal({ route, navigation, ...rest }) {

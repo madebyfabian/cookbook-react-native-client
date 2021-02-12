@@ -3,15 +3,10 @@ import { StyleSheet, View, Text, ScrollView } from 'react-native'
 
 import logger from '../../utils/logger'
 import firebase from '../../services/firebase'
-import useStatusBar from '../../hooks/useStatusBar'
 import { callbackPaths } from '../../utils/constants'
 import { useAuthStore } from '../../store'
-import useDidUpdateEffect from '../../hooks/useDidUpdateEffect'
-
-import SafeView from '../../components/SafeView'
-import TextHeadline from '../../components/TextHeadline'
-import AppButton from '../../components/AppButton'
-import AppTextInput from '../../components/AppTextInput'
+import { useStatusBar, useDidUpdateEffect } from '../../hooks'
+import { SafeView, TextHeadline, AppButton, AppTextInput } from '../../components'
 
 
 export default function ProfileScreen({ navigation }) {

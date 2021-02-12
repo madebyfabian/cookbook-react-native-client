@@ -3,13 +3,9 @@ import { StyleSheet, View, Text } from 'react-native'
 import * as Yup from 'yup'
 import AsyncStorage, { KEYS } from '../../utils/AsyncStorage'
 
-import useStatusBar from '../../hooks/useStatusBar'
+import { useStatusBar } from '../../hooks'
 import { callbackPaths } from '../../utils/constants'
-
-import SafeView from '../../components/SafeView'
-import AppButton from '../../components/AppButton'
-import AppTextInput from '../../components/AppTextInput'
-import TextHeadline from '../../components/TextHeadline'
+import { SafeView, AppButton, AppTextInput, TextHeadline } from '../../components'
 
 
 const validationSchema = Yup.object().shape({

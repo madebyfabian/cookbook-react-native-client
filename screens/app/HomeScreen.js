@@ -2,12 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { Pressable, View, StyleSheet, Text, Button } from 'react-native'
 import ViewPager from '@react-native-community/viewpager'
 
-import useStatusBar from '../../hooks/useStatusBar'
+import { useStatusBar } from '../../hooks'
 import useAPI from '../../services/api'
-import SafeView from '../../components/SafeView'
-import Avatar from '../../components/Avatar'
-import RecipeCard from '../../components/HomeScreen/RecipeCard'
-import FilterModal from '../../components/HomeScreen/FilterModal'
+import { SafeView, Avatar } from '../../components'
+import { RecipeCard, FilterModal } from '../../components/HomeScreen'
 import { useAuthStore } from '../../store'
 
 

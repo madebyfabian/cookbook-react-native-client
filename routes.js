@@ -6,8 +6,7 @@ import { createNativeStackNavigator } from 'react-native-screens/native-stack'
 import { enableScreens } from 'react-native-screens'
 
 import { useAuthStore, useGeneralStore } from './store'
-import TabBar from './components/TabBar'
-import Spinner from './components/Spinner'
+import { TabBar, Spinner } from './components'
 
 // App Stack Screens
 import HomeScreen from './screens/app/HomeScreen'

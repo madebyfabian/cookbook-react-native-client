@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react'
 import { Text, ScrollView, View, Animated } from 'react-native'
 import BottomSheet from 'reanimated-bottom-sheet'
 
-import AppButton from '../../components/AppButton'
+import { AppButton } from '../../components'
 
 
 export default function FilterModal({ style, screenHeight, ...rest }) {

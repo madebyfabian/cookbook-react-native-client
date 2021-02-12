@@ -1,9 +1,6 @@
-import useDidUpdateEffect from './useDidUpdateEffect'
-import useHandleAuthCallback from './useHandleAuthCallback'
-import useStatusBar from './useStatusBar'
+export { default as useDidUpdateEffect } from './useDidUpdateEffect'
+export { default as useHandleAuthCallback } from './useHandleAuthCallback'
+export { default as useStatusBar } from './useStatusBar'
 
-export {
-	useDidUpdateEffect,
-	useHandleAuthCallback,
-	useStatusBar
-}
+
+

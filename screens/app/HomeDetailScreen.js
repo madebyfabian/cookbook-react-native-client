@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react'
 import { Text, View, ScrollView, Animated, StyleSheet, ImageBackground } from 'react-native'
 
-import SafeView from '../../components/SafeView'
+import { SafeView } from '../../components'
 import { Ionicons } from '@expo/vector-icons'
 
 

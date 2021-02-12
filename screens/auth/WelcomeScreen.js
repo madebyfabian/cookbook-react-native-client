@@ -3,12 +3,8 @@ import { View, StyleSheet, Text } from 'react-native'
 import * as Yup from 'yup'
 
 import firebase from '../../services/firebase'
-import useStatusBar from '../../hooks/useStatusBar'
-
-import SafeView from '../../components/SafeView'
-import AppTextInput from '../../components/AppTextInput'
-import AppButton from '../../components/AppButton'
-import TextHeadline from '../../components/TextHeadline'
+import { useStatusBar } from '../../hooks'
+import { SafeView, AppButton, AppTextInput, TextHeadline } from '../../components'
 
 
 const validationSchema = Yup.object().shape({
