@@ -22,6 +22,8 @@ export default function useAuth() {
         updateUser = useAuthStore(state => state.updateUser)
 				
   useEffect(() => {
+		// logger.chain.start('init useAuth()')
+		
     const unsub = firebase.auth().onAuthStateChanged(async authUser => {
       // If the user is now valid, close the MagicLinkModal.
       if (authUser) 
@@ -31,7 +33,10 @@ export default function useAuth() {
       updateAppIsLoading(false)
     })
 
-    return unsub
+    return () => {
+			// logger.chain.end('destroyed useAuth()')
+			unsub()
+		}
   }, [])
 	
 
@@ -41,7 +46,7 @@ export default function useAuth() {
         updateLastReauthDate = useAuthStore(state => state.updateLastReauthDate)
 
   useEffect(() => {
-    console.log('lastReauthDate updated to', lastReauthDate)
+    // logger.log('lastReauthDate updated to', lastReauthDate)
 
     // User reauthenticated, so we can close the MagicLinkModal.
     closeMagicLinkModal()
